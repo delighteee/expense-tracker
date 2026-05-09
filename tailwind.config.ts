@@ -9,8 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "#0F6E56",
+        "primary-light": "#E1F5EE",
+        "primary-dark": "#0a5240",
+      },
+      fontFamily: {
+        sans: ["system-ui", "-apple-system", "sans-serif"],
+      },
+      maxWidth: {
+        mobile: "480px",
       },
     },
   },
