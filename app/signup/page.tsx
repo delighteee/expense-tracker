@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Logo from '@/components/Logo';
+import {
+  Alert, Box, Button, Field, Flex,
+  Grid, Input, Text,
+} from '@chakra-ui/react';
 
 const BANKS = [
   'GTBank', 'Access', 'Zenith', 'First Bank', 'UBA',
@@ -39,9 +43,7 @@ export default function SignupPage() {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name, banks: selectedBanks },
-      },
+      options: { data: { name, banks: selectedBanks } },
     });
 
     if (signUpError) {
@@ -51,10 +53,7 @@ export default function SignupPage() {
     }
 
     if (data.user) {
-      await supabase.from('users').upsert({
-        id: data.user.id,
-        name,
-      });
+      await supabase.from('users').upsert({ id: data.user.id, name });
     }
 
     router.push('/onboarding');
@@ -62,101 +61,121 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-safe pb-8">
-      <div className="flex flex-col items-center pt-12 pb-8">
+    <Flex
+      direction="column"
+      minH="100vh"
+      px={6}
+      pb={8}
+      style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+    >
+      <Flex direction="column" align="center" pt={12} pb={8}>
         <Logo size={48} />
-        <p className="mt-2 text-gray-500 text-sm">Create your account</p>
-      </div>
+        <Text mt={2} color="gray.500" fontSize="sm">Create your account</Text>
+      </Flex>
 
-      <form onSubmit={handleSignup} className="flex flex-col gap-4">
+      <Box as="form" onSubmit={handleSignup} display="flex" flexDirection="column" gap={4}>
         {error && (
-          <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-xl border border-red-200">
-            {error}
-          </div>
+          <Alert.Root status="error" borderRadius="xl" fontSize="sm">
+            <Alert.Indicator />
+            <Alert.Description>{error}</Alert.Description>
+          </Alert.Root>
         )}
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name</label>
-          <input
-            id="name"
+        <Field.Root>
+          <Field.Label fontSize="sm" fontWeight="medium" color="gray.700">Full Name</Field.Label>
+          <Input
             type="text"
             autoComplete="name"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-12 px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#0F6E56] focus:border-transparent"
+            h={12}
+            borderRadius="xl"
             placeholder="Chukwuemeka Obi"
+            colorPalette="brand"
           />
-        </div>
+        </Field.Root>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-gray-700">Email</label>
-          <input
-            id="email"
+        <Field.Root>
+          <Field.Label fontSize="sm" fontWeight="medium" color="gray.700">Email</Field.Label>
+          <Input
             type="email"
             autoComplete="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#0F6E56] focus:border-transparent"
+            h={12}
+            borderRadius="xl"
             placeholder="you@example.com"
+            colorPalette="brand"
           />
-        </div>
+        </Field.Root>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-          <input
-            id="password"
+        <Field.Root>
+          <Field.Label fontSize="sm" fontWeight="medium" color="gray.700">Password</Field.Label>
+          <Input
             type="password"
             autoComplete="new-password"
             required
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-12 px-4 rounded-xl border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#0F6E56] focus:border-transparent"
+            h={12}
+            borderRadius="xl"
             placeholder="Minimum 8 characters"
+            colorPalette="brand"
           />
-        </div>
+        </Field.Root>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-gray-700">Your Banks</label>
-          <p className="text-xs text-gray-500">Select all banks you use</p>
-          <div className="grid grid-cols-2 gap-2">
+        <Box display="flex" flexDirection="column" gap={2}>
+          <Text fontSize="sm" fontWeight="medium" color="gray.700">Your Banks</Text>
+          <Text fontSize="xs" color="gray.500">Select all banks you use</Text>
+          <Grid templateColumns="repeat(2, 1fr)" gap={2}>
             {BANKS.map((bank) => {
               const selected = selectedBanks.includes(bank);
               return (
-                <button
+                <Button
                   key={bank}
                   type="button"
                   onClick={() => toggleBank(bank)}
-                  className={`h-11 px-3 rounded-xl border text-sm font-medium transition-colors ${
-                    selected
-                      ? 'bg-[#E1F5EE] border-[#0F6E56] text-[#0F6E56]'
-                      : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  h={11}
+                  borderRadius="xl"
+                  variant={selected ? 'subtle' : 'outline'}
+                  colorPalette={selected ? 'brand' : undefined}
+                  borderColor={selected ? 'brand.500' : 'gray.300'}
+                  color={selected ? 'brand.500' : 'gray.700'}
+                  bg={selected ? 'brand.50' : 'white'}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  _hover={{}}
                 >
                   {bank}
-                </button>
+                </Button>
               );
             })}
-          </div>
-        </div>
+          </Grid>
+        </Box>
 
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="h-12 bg-[#0F6E56] text-white font-semibold rounded-xl mt-2 disabled:opacity-60 active:bg-[#0a5240] transition-colors"
+          loading={loading}
+          loadingText="Creating account…"
+          h={12}
+          borderRadius="xl"
+          fontWeight="semibold"
+          mt={2}
+          colorPalette="brand"
         >
-          {loading ? 'Creating account…' : 'Create account'}
-        </button>
-      </form>
+          Create account
+        </Button>
+      </Box>
 
-      <p className="text-center text-sm text-gray-500 mt-6">
+      <Text textAlign="center" fontSize="sm" color="gray.500" mt={6}>
         Already have an account?{' '}
-        <Link href="/login" className="text-[#0F6E56] font-semibold">
-          Sign in
+        <Link href="/login">
+          <Text as="span" color="brand.500" fontWeight="semibold">Sign in</Text>
         </Link>
-      </p>
-    </div>
+      </Text>
+    </Flex>
   );
 }

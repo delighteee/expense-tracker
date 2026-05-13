@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { CheckCircle, Upload, Bell } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import Logo from '@/components/Logo';
+import {
+  Box, Button, Circle, Flex, Grid, Text,
+} from '@chakra-ui/react';
 
 const BANKS = [
   'GTBank', 'Access', 'Zenith', 'First Bank', 'UBA',
@@ -58,125 +61,188 @@ export default function OnboardingPage() {
   const currentStep = steps[step];
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-safe pb-8">
+    <Flex
+      direction="column"
+      minH="100vh"
+      px={6}
+      pb={8}
+      style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+    >
       {/* Progress */}
-      <div className="pt-8 pb-6">
+      <Box pt={8} pb={6}>
         <Logo size={36} />
-        <div className="flex gap-2 mt-6">
+        <Flex gap={2} mt={6}>
           {[1, 2, 3].map((s) => (
-            <div
+            <Box
               key={s}
-              className={`h-1.5 flex-1 rounded-full transition-colors ${
-                s <= currentStep ? 'bg-[#0F6E56]' : 'bg-gray-200'
-              }`}
+              h="6px"
+              flex={1}
+              borderRadius="full"
+              bg={s <= currentStep ? 'brand.500' : 'gray.200'}
+              transition="background 0.3s"
             />
           ))}
-        </div>
-        <p className="text-xs text-gray-400 mt-2">Step {currentStep} of 3</p>
-      </div>
+        </Flex>
+        <Text fontSize="xs" color="gray.400" mt={2}>Step {currentStep} of 3</Text>
+      </Box>
 
       {step === 'banks' && (
-        <div className="flex flex-col gap-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Your banks</h2>
-            <p className="text-sm text-gray-500 mt-1">Which banks do you use? We&apos;ll help categorise your transactions.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
+        <Flex direction="column" gap={6}>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold" color="gray.900">Your banks</Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Which banks do you use? We&apos;ll help categorise your transactions.
+            </Text>
+          </Box>
+          <Grid templateColumns="repeat(2, 1fr)" gap={2}>
             {BANKS.map((bank) => {
               const selected = selectedBanks.includes(bank);
               return (
-                <button
+                <Button
                   key={bank}
                   type="button"
                   onClick={() => toggleBank(bank)}
-                  className={`h-11 px-3 rounded-xl border text-sm font-medium transition-colors ${
-                    selected
-                      ? 'bg-[#E1F5EE] border-[#0F6E56] text-[#0F6E56]'
-                      : 'bg-white border-gray-300 text-gray-700'
-                  }`}
+                  h={11}
+                  borderRadius="xl"
+                  variant="outline"
+                  borderColor={selected ? 'brand.500' : 'gray.300'}
+                  color={selected ? 'brand.500' : 'gray.700'}
+                  bg={selected ? 'brand.50' : 'white'}
+                  fontSize="sm"
+                  fontWeight="medium"
+                  _hover={{}}
                 >
                   {bank}
-                </button>
+                </Button>
               );
             })}
-          </div>
-          <button
+          </Grid>
+          <Button
             onClick={handleBanksContinue}
             disabled={selectedBanks.length === 0}
-            className="h-12 bg-[#0F6E56] text-white font-semibold rounded-xl disabled:opacity-40 active:bg-[#0a5240] transition-colors"
+            h={12}
+            borderRadius="xl"
+            fontWeight="semibold"
+            colorPalette="brand"
           >
             Continue
-          </button>
-        </div>
+          </Button>
+        </Flex>
       )}
 
       {step === 'receipt' && (
-        <div className="flex flex-col gap-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Upload your first receipt</h2>
-            <p className="text-sm text-gray-500 mt-1">Take a photo of a bank receipt or debit alert SMS to log your first transaction.</p>
-          </div>
-          <div className="bg-[#E1F5EE] rounded-2xl p-8 flex flex-col items-center gap-4 border-2 border-dashed border-[#0F6E56]/40">
-            <div className="w-16 h-16 bg-[#0F6E56] rounded-full flex items-center justify-center">
-              <Upload size={28} className="text-white" />
-            </div>
-            <p className="text-sm text-center text-gray-600">Tap to upload a receipt image</p>
-            <button
+        <Flex direction="column" gap={6}>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold" color="gray.900">Upload your first receipt</Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Take a photo of a bank receipt or debit alert SMS to log your first transaction.
+            </Text>
+          </Box>
+          <Flex
+            direction="column"
+            align="center"
+            gap={4}
+            bg="brand.50"
+            borderRadius="2xl"
+            p={8}
+            borderWidth="2px"
+            borderStyle="dashed"
+            borderColor="brand.500"
+            opacity={0.7}
+          >
+            <Circle size="64px" bg="brand.500">
+              <Upload size={28} color="white" />
+            </Circle>
+            <Text fontSize="sm" textAlign="center" color="gray.600">
+              Tap to upload a receipt image
+            </Text>
+            <Button
               onClick={() => setStep('notifications')}
-              className="h-11 px-6 bg-[#0F6E56] text-white font-semibold rounded-xl text-sm active:bg-[#0a5240]"
+              h={11}
+              px={6}
+              borderRadius="xl"
+              fontSize="sm"
+              fontWeight="semibold"
+              colorPalette="brand"
             >
               Upload Receipt
-            </button>
-          </div>
-          <button
+            </Button>
+          </Flex>
+          <Button
+            variant="plain"
             onClick={() => setStep('notifications')}
-            className="text-sm text-gray-500 text-center underline"
+            fontSize="sm"
+            color="gray.500"
+            textDecoration="underline"
           >
             Skip for now
-          </button>
-        </div>
+          </Button>
+        </Flex>
       )}
 
       {step === 'notifications' && (
-        <div className="flex flex-col gap-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">Stay on top of your spending</h2>
-            <p className="text-sm text-gray-500 mt-1">Get weekly and monthly spending summaries via push notifications.</p>
-          </div>
-          <div className="bg-[#E1F5EE] rounded-2xl p-6 flex flex-col items-center gap-4">
-            <div className="w-16 h-16 bg-[#0F6E56] rounded-full flex items-center justify-center">
-              <Bell size={28} className="text-white" />
-            </div>
-            <div className="flex flex-col gap-2 w-full">
+        <Flex direction="column" gap={6}>
+          <Box>
+            <Text fontSize="xl" fontWeight="bold" color="gray.900">Stay on top of your spending</Text>
+            <Text fontSize="sm" color="gray.500" mt={1}>
+              Get weekly and monthly spending summaries via push notifications.
+            </Text>
+          </Box>
+          <Flex
+            direction="column"
+            align="center"
+            gap={4}
+            bg="brand.50"
+            borderRadius="2xl"
+            p={6}
+          >
+            <Circle size="64px" bg="brand.500">
+              <Bell size={28} color="white" />
+            </Circle>
+            <Flex direction="column" gap={2} w="full">
               {[
                 { label: 'Weekly spending summary', desc: 'Every Monday morning' },
                 { label: 'Monthly report', desc: 'First of every month' },
               ].map((item) => (
-                <div key={item.label} className="flex items-center gap-3 bg-white rounded-xl p-3">
-                  <CheckCircle size={18} className="text-[#0F6E56] shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{item.label}</p>
-                    <p className="text-xs text-gray-500">{item.desc}</p>
-                  </div>
-                </div>
+                <Flex
+                  key={item.label}
+                  align="center"
+                  gap={3}
+                  bg="white"
+                  borderRadius="xl"
+                  p={3}
+                >
+                  <CheckCircle size={18} color="#0F6E56" style={{ flexShrink: 0 }} />
+                  <Box>
+                    <Text fontSize="sm" fontWeight="medium" color="gray.800">{item.label}</Text>
+                    <Text fontSize="xs" color="gray.500">{item.desc}</Text>
+                  </Box>
+                </Flex>
               ))}
-            </div>
-          </div>
-          <button
+            </Flex>
+          </Flex>
+          <Button
             onClick={handleNotifications}
-            disabled={notifLoading}
-            className="h-12 bg-[#0F6E56] text-white font-semibold rounded-xl disabled:opacity-60 active:bg-[#0a5240] transition-colors"
+            loading={notifLoading}
+            loadingText="Setting up…"
+            h={12}
+            borderRadius="xl"
+            fontWeight="semibold"
+            colorPalette="brand"
           >
-            {notifLoading ? 'Setting up…' : 'Enable notifications'}
-          </button>
-          <button
+            Enable notifications
+          </Button>
+          <Button
+            variant="plain"
             onClick={() => router.push('/dashboard')}
-            className="text-sm text-gray-500 text-center underline"
+            fontSize="sm"
+            color="gray.500"
+            textDecoration="underline"
           >
             Skip for now
-          </button>
-        </div>
+          </Button>
+        </Flex>
       )}
-    </div>
+    </Flex>
   );
 }

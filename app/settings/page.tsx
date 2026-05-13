@@ -6,6 +6,7 @@ import { LogOut, Bell, ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import BottomNav from '@/components/BottomNav';
 import Logo from '@/components/Logo';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -20,34 +21,67 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen pb-20 pt-safe">
-      <header className="px-6 pt-6 pb-6">
+    <Flex
+      direction="column"
+      minH="100vh"
+      pb={20}
+      style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+    >
+      <Box as="header" px={6} pt={6} pb={6}>
         <Logo size={36} />
-        <h1 className="text-2xl font-bold text-gray-900 mt-4">Settings</h1>
-      </header>
+        <Text fontSize="2xl" fontWeight="bold" color="gray.900" mt={4}>Settings</Text>
+      </Box>
 
-      <main className="flex-1 px-6 flex flex-col gap-4">
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <button className="flex items-center justify-between w-full h-14 px-4 border-b border-gray-100 active:bg-gray-50">
-            <div className="flex items-center gap-3">
-              <Bell size={18} className="text-[#0F6E56]" />
-              <span className="text-sm font-medium text-gray-800">Notifications</span>
-            </div>
-            <ChevronRight size={16} className="text-gray-400" />
-          </button>
-        </div>
+      <Flex as="main" flex={1} direction="column" px={6} gap={4}>
+        <Box
+          bg="white"
+          borderRadius="2xl"
+          borderWidth="1px"
+          borderColor="gray.100"
+          shadow="sm"
+          overflow="hidden"
+        >
+          <Flex
+            as="button"
+            align="center"
+            justify="space-between"
+            w="full"
+            h={14}
+            px={4}
+            borderBottomWidth="1px"
+            borderColor="gray.100"
+            _active={{ bg: 'gray.50' }}
+          >
+            <Flex align="center" gap={3}>
+              <Bell size={18} color="#0F6E56" />
+              <Text fontSize="sm" fontWeight="medium" color="gray.800">Notifications</Text>
+            </Flex>
+            <ChevronRight size={16} color="#9CA3AF" />
+          </Flex>
+        </Box>
 
-        <button
+        <Button
           onClick={handleSignOut}
-          disabled={loading}
-          className="flex items-center justify-center gap-2 h-12 w-full bg-red-50 text-red-600 font-semibold rounded-xl border border-red-200 disabled:opacity-60 active:bg-red-100 transition-colors"
+          loading={loading}
+          loadingText="Signing out…"
+          h={12}
+          w="full"
+          bg="red.50"
+          color="red.600"
+          fontWeight="semibold"
+          borderRadius="xl"
+          borderWidth="1px"
+          borderColor="red.200"
+          variant="outline"
+          _hover={{ bg: 'red.100' }}
+          _active={{ bg: 'red.100' }}
         >
           <LogOut size={18} />
-          {loading ? 'Signing out…' : 'Sign out'}
-        </button>
-      </main>
+          Sign out
+        </Button>
+      </Flex>
 
       <BottomNav />
-    </div>
+    </Flex>
   );
 }

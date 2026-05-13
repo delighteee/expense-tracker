@@ -26,7 +26,7 @@ export default function BottomNav() {
       bg="white"
       borderTopWidth="1px"
       borderColor="gray.200"
-      sx={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
+      style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
     >
       <Flex justify="space-around">
         {navItems.map(({ href, label, icon: Icon }) => {
